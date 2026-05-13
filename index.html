@@ -1,597 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shop UI Mockup</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng - BookStore</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-      :root {
-        --bg: #ffffff;
-        --text: #222;
-        --muted: #777;
-        --line: #e6e6e6;
-        --chip: #f4f4f4;
-        --chip-dark: #2d2d2d;
-        --soft: #fafafa;
-        --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-        --radius: 12px;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        color: var(--text);
-        background: var(--bg);
-      }
-
-      .page {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Header */
-      .topbar {
-        height: 92px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30px;
-        border-bottom: 1px solid var(--line);
-        background: #fff;
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-width: 90px;
-      }
-
-      .brand-mark {
-        width: 32px;
-        height: 32px;
-        position: relative;
-      }
-      .brand-mark::before,
-      .brand-mark::after {
-        content: "";
-        position: absolute;
-        border: 4px solid #222;
-        border-radius: 16px;
-        width: 18px;
-        height: 18px;
-        transform: rotate(45deg);
-        left: 4px;
-        top: 6px;
-      }
-      .brand-mark::after {
-        width: 11px;
-        height: 11px;
-        left: 10px;
-        top: 12px;
-        border-width: 3px;
-        border-color: #222 transparent #222 #222;
-        border-radius: 50%;
-        transform: rotate(45deg);
-        opacity: 0.9;
-      }
-
-      .nav {
-        display: flex;
-        gap: 22px;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: center;
-        flex: 1;
-        font-size: 16px;
-      }
-
-      .nav a {
-        text-decoration: none;
-        color: #333;
-        padding: 8px 12px;
-        border-radius: 10px;
-      }
-      .nav a.active {
-        background: #f4f4f4;
-      }
-
-      .auth {
-        display: flex;
-        gap: 10px;
-        min-width: 180px;
-        justify-content: flex-end;
-      }
-      .btn {
-        border: 1px solid #bdbdbd;
-        background: #f1f1f1;
-        color: #222;
-        padding: 12px 18px;
-        border-radius: 12px;
-        font-size: 15px;
-        cursor: default;
-      }
-      .btn.dark {
-        background: #2f2f2f;
-        color: #fff;
-        border-color: #2f2f2f;
-      }
-
-      /* Main */
-      .main {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-        gap: 28px;
-        padding: 34px 30px 40px;
-        flex: 1;
-      }
-
-      .sidebar {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 16px 14px 18px;
-        box-shadow: var(--shadow);
-        align-self: start;
-        background: #fff;
-        min-height: 660px;
-      }
-
-      .sidebar h3 {
-        margin: 0 0 12px;
-        font-size: 19px;
-        font-weight: 500;
-      }
-
-      .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 18px;
-      }
-      .tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 10px;
-        border-radius: 10px;
-        background: #f3f3f3;
-        font-size: 15px;
-        color: #333;
-      }
-      .tag .x {
-        font-size: 18px;
-        line-height: 1;
-        color: #555;
-      }
-
-      .filter-group {
-        margin: 18px 0 0;
-        display: grid;
-        gap: 12px;
-        font-size: 15px;
-      }
-
-      .check {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .check input {
-        width: 16px;
-        height: 16px;
-        accent-color: #2f2f2f;
-      }
-
-      .range-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 34px;
-        margin-bottom: 10px;
-        color: #333;
-        font-size: 15px;
-      }
-
-      .range-wrap {
-        margin: 8px 2px 20px;
-      }
-      input[type="range"] {
-        width: 100%;
-        accent-color: #2f2f2f;
-      }
-
-      .section-label {
-        margin-top: 14px;
-        font-size: 18px;
-        color: #222;
-      }
-      .small-gap {
-        margin-top: 6px;
-      }
-
-      /* Content */
-      .content {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-
-      .search {
-        position: relative;
-        width: 160px;
-      }
-      .search input {
-        width: 100%;
-        padding: 12px 40px 12px 18px;
-        border: 1px solid #d8d8d8;
-        border-radius: 20px;
-        outline: none;
-        font-size: 15px;
-        color: #222;
-      }
-      .search .icon {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
-        color: #333;
-      }
-
-      .sorts {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-      .sort-chip {
-        padding: 10px 16px;
-        border-radius: 11px;
-        background: #f1f1f1;
-        color: #7a7a7a;
-        font-size: 15px;
-        white-space: nowrap;
-      }
-      .sort-chip.active {
-        background: #2f2f2f;
-        color: #fff;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 20px;
-        padding-top: 6px;
-      }
-
-      .card {
-        border: 1px solid #dcdcdc;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: var(--shadow);
-      }
-
-      .thumb {
-        height: 258px;
-        background: #f8f8f8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
-      }
-      .thumb img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        display: block;
-      }
-
-      .card-body {
-        padding: 14px 14px 16px;
-        min-height: 128px;
-      }
-      .title {
-        font-size: 16px;
-        line-height: 1.35;
-        margin: 0 0 12px;
-        color: #333;
-        min-height: 44px;
-      }
-      .price {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0;
-      }
-
-      /* Footer */
-      .footer {
-        border-top: 1px solid var(--line);
-        padding: 36px 30px 30px;
-        display: grid;
-        grid-template-columns: 240px 1fr;
-        gap: 30px;
-        background: #fff;
-      }
-
-      .footer-left {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        align-items: flex-start;
-      }
-
-      .socials {
-        display: flex;
-        gap: 14px;
-        font-size: 30px;
-        color: #222;
-        align-items: center;
-      }
-
-      .footer-cols {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-      }
-
-      .footer h4 {
-        margin: 0 0 18px;
-        font-size: 17px;
-      }
-      .footer a {
-        display: block;
-        text-decoration: none;
-        color: #333;
-        margin: 14px 0;
-        font-size: 15px;
-      }
-
-      @media (max-width: 1100px) {
-        .main {
-          grid-template-columns: 1fr;
-        }
-        .sidebar {
-          min-height: auto;
-        }
-        .grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .footer {
-          grid-template-columns: 1fr;
-        }
-        .footer-cols {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (max-width: 700px) {
-        .topbar {
-          height: auto;
-          padding: 16px;
-          flex-direction: column;
-          gap: 14px;
-        }
-        .nav {
-          gap: 8px;
-        }
-        .auth {
-          width: 100%;
-          justify-content: center;
-        }
-        .main {
-          padding: 20px 14px 30px;
-        }
-        .grid {
-          grid-template-columns: 1fr;
-        }
-        .footer {
-          padding: 24px 14px;
-        }
-        .footer-cols {
-          grid-template-columns: 1fr;
-        }
-        .sidebar {
-          width: 100%;
-        }
-      }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        h2 { color: #1a73e8; margin: 0; }
+        button { padding: 10px 20px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        button:hover { background-color: #1557b0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:hover { background-color: #f1f7ff; }
+        
+        .avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: #eee; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge-active { background-color: #e6ffed; color: #28a745; }
+        .badge-inactive { background-color: #ffeef0; color: #d73a49; }
+        .role-admin { color: #f44336; font-weight: bold; }
+        
+        #loading { text-align: center; color: #666; font-style: italic; margin: 20px 0; }
     </style>
-  </head>
-  <body>
-    <div class="page">
-      <header class="topbar">
-        <div class="brand" aria-label="Logo">
-          <div class="brand-mark"></div>
-        </div>
+</head>
+<body>
 
-        <nav class="nav">
-          <a href="#" class="active">Trang chủ</a>
-          <a href="#">Danh mục</a>
-          <a href="#">Giày nam</a>
-          <a href="#">Giày nữ</a>
-          <a href="#">Thương hiệu</a>
-          <a href="#">Khuyến mãi</a>
-          <a href="#">Liên hệ</a>
-        </nav>
-
-        <div class="auth">
-          <button class="btn">Đăng nhập</button>
-          <button class="btn dark">Đăng ký</button>
-        </div>
-      </header>
-
-      <main class="main">
-        <aside class="sidebar">
-          <h3>Từ khóa</h3>
-          <div class="tags">
-            <span class="tag">Chạy bộ <span class="x">×</span></span>
-            <span class="tag">Thể thao <span class="x">×</span></span>
-            <span class="tag">Lifestyle <span class="x">×</span></span>
-          </div>
-
-          <div class="filter-group">
-            <label class="check"><input type="checkbox" checked /> Giày chạy bộ</label>
-            <label class="check"><input type="checkbox" checked /> Giày thể thao</label>
-            <label class="check"><input type="checkbox" checked /> Giày lifestyle</label>
-          </div>
-
-          <div class="range-row">
-            <span>Giá</span>
-            <span>0-6.000.000đ</span>
-          </div>
-          <div class="range-wrap">
-            <input type="range" min="0" max="100" value="100" />
-          </div>
-
-          <div class="section-label">Color</div>
-          <div class="filter-group small-gap">
-            <label class="check"><input type="checkbox" checked /> Đen</label>
-            <label class="check"><input type="checkbox" checked /> Xanh</label>
-            <label class="check"><input type="checkbox" checked /> Đỏ</label>
-          </div>
-
-          <div class="section-label">Size</div>
-          <div class="filter-group small-gap">
-            <label class="check"><input type="checkbox" checked /> 38</label>
-            <label class="check"><input type="checkbox" checked /> 39</label>
-            <label class="check"><input type="checkbox" checked /> 40</label>
-            <label class="check"><input type="checkbox" checked /> 41</label>
-            <label class="check"><input type="checkbox" checked /> 42</label>
-            <label class="check"><input type="checkbox" checked /> 43</label>
-          </div>
-        </aside>
-
-        <section class="content">
-          <div class="toolbar">
-            <div class="search">
-              <input type="text" placeholder="Tìm kiếm" />
-              <span class="icon">⌕</span>
-            </div>
-
-            <div class="sorts">
-              <div class="sort-chip active">✓ Mới</div>
-              <div class="sort-chip">Giá tăng dần</div>
-              <div class="sort-chip">Giá giảm dần</div>
-              <div class="sort-chip">Sắp xếp theo đánh giá</div>
-            </div>
-          </div>
-
-          <div class="grid">
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80"
-                  alt="Giày chạy bộ nam Nike Run Defy" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">Giày Chạy Bộ Nam Nike Run Defy - Xám</h3>
-                <p class="price">1.163.000đ</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=900&q=80"
-                  alt="Giày chạy bộ nữ Nike Run Defy" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">Giày Chạy Bộ Nữ Nike Run Defy - Hồng</h3>
-                <p class="price">1.163.000đ</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://supersports.com.vn/cdn/shop/files/HQ1940-602-1.jpg?v=1754304660&width=1000"
-                  alt="Giày sneaker nữ Nike Terra Manta" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">Giày Sneaker Nữ Nike Terra Manta - Be</h3>
-                <p class="price">1.649.000đ</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://ash.vn/cdn/shop/files/AURORA_DC0774-101_PHSRH000-2000_800x.jpg?v=1769682975"
-                  alt="Giày Air Jordan 1 Low Wms Panda" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">[SẴN AUT 100%] Giày Air Jordan 1 Low Wms Panda</h3>
-                <p class="price">3.750.000đ</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://images.unsplash.com/photo-1605348532760-6753d2c43329?auto=format&fit=crop&w=900&q=80"
-                  alt="Giày Nike Air Force 1 '07" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">Giày NIKE AIR FORCE 1 '07 - CW2288-111</h3>
-                <p class="price">3.150.000đ</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="thumb">
-                <img
-                  src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=900&q=80"
-                  alt="Giày chạy bộ nữ Nike Journey Run" />
-              </div>
-              <div class="card-body">
-                <h3 class="title">Giày Chạy Bộ Nữ Nike Journey Run - Xanh Lá</h3>
-                <p class="price">2.335.000đ</p>
-              </div>
-            </article>
-          </div>
-        </section>
-      </main>
-
-      <footer class="footer">
-        <div class="footer-left">
-          <div class="brand-mark"></div>
-          <div class="socials">𝕏 ⓘ ▶ in</div>
-        </div>
-
-        <div class="footer-cols">
-          <div>
-            <h4>Về cửa hàng</h4>
-            <a href="#">Giới thiệu</a>
-            <a href="#">Tin tức</a>
-            <a href="#">Khuyến mãi</a>
-          </div>
-          <div>
-            <h4>Hỗ trợ khách hàng</h4>
-            <a href="#">Hỗ trợ khách hàng</a>
-            <a href="#">Hướng dẫn mua hàng</a>
-            <a href="#">Đổi trả</a>
-            <a href="#">Bảo hành</a>
-          </div>
-          <div>
-            <h4>Thông tin</h4>
-            <a href="#">Liên hệ</a>
-            <a href="#">Hệ thống cửa hàng</a>
-            <a href="#">Điều khoản sử dụng</a>
-            <a href="#">Chính sách bảo mật</a>
-          </div>
-        </div>
-      </footer>
+<div class="container">
+    <div class="header">
+        <h2>Danh sách người dùng</h2>
+        <button onclick="fetchAllUsers()">Làm mới dữ liệu</button>
     </div>
-  </body>
+
+    <div id="loading" style="display: none;">Đang lấy dữ liệu từ server...</div>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ảnh</th>
+                <th>Tên đăng nhập</th>
+                <th>Email</th>
+                <th>Họ tên</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+               
+            </tr>
+        </thead>
+        <tbody id="userData">
+            <!-- Dữ liệu API sẽ hiển thị ở đây -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Hàm lấy tất cả người dùng
+    async function fetchAllUsers() {
+        const tbody = document.getElementById('userData');
+        const loading = document.getElementById('loading');
+        
+        // Hiện trạng thái loading
+        tbody.innerHTML = '';
+        loading.style.display = 'block';
+
+        try {
+            // Gọi đến API của bạn
+            const response = await axios.get('https://bookking000.vercel.app/api/users/');
+            
+            // Giả sử API trả về mảng trực tiếp hoặc nằm trong response.data.data
+            const users = response.data.data || response.data;
+
+            if (users && users.length > 0) {
+                users.forEach(user => {
+                    const statusBadge = user.is_active == 1 
+                        ? '<span class="badge badge-active">Hoạt động</span>' 
+                        : '<span class="badge badge-inactive">Khóa</span>';
+                    
+                    const roleClass = user.role === 'admin' ? 'role-admin' : '';
+                    const avatarUrl = user.avatar || 'https://via.placeholder.com/35';
+
+                    const row = `
+                        <tr>
+                            <td><strong>${user.id}</strong></td>
+                            <td><img src="${avatarUrl}" class="avatar" alt="avatar"></td>
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                            <td>${user.full_name || '---'}</td>
+                            <td class="${roleClass}">${user.role}</td>
+                            <td>${statusBadge}</td>
+                           
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Không có dữ liệu người dùng.</td></tr>';
+            }
+        } catch (error) {
+            console.error("Lỗi API:", error);
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:red;">Lỗi: ${error.message}. Kiểm tra CORS tại Backend!</td></tr>`;
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    // Tự động tải dữ liệu khi vừa mở trang
+    window.onload = fetchAllUsers;
+</script>
+
+</body>
 </html>
